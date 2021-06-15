@@ -13,11 +13,11 @@ var op3 = document.getElementById("opt3");
 var op4 = document.getElementById("opt4");
 var ansKey = document.getElementById("answerKey");
 var res = document.getElementById("restart");
+var ele = document.getElementsByTagName("input");
 
+const ARRanswers = ["A", "B", "C", "C", "D", "D", "B", "B", "D", "A"];
 
-var ARRanswers = ["A", "B", "C", "C", "D", "D", "B", "B", "D", "A"];
-
-var questions = [
+const questions = [
 	{
 		id : 1,
 		ques : "Ques1",
@@ -108,7 +108,18 @@ var questions = [
 		option4 : " D",
 		correctAns : "ans1"
 	},
-]
+];
+
+function uncheckALL(){
+	for(var i=0; i<ele.length; i++){
+			if(ele[i].type == "radio"){
+				if(ele[i].checked){
+					ele[i].checked = false;
+				}
+
+			}
+	}
+}
 
 startBtn.addEventListener("click", commenceTest);
 var q = 0;
@@ -116,6 +127,10 @@ function commenceTest(event){
 	//hide given page data
 	home.style.display = "none";
 	quiz.style.display = "block";
+	submit.disabled = false;
+	submit.innerHTML = "Submit";
+	uncheckALL();
+
 	question.innerHTML = questions[q].ques;
 	op1.innerHTML = questions[q].option1;
 	op2.innerHTML = questions[q].option2;
@@ -129,8 +144,13 @@ submit.addEventListener("click", handleSubmit);
 
 function handleSubmit(event){
 	//read selected ans
-	var ele = document.getElementsByTagName("input");
+	
 	var sel;
+
+
+	//uncheck all
+	
+
 	for(var i=0; i<ele.length; i++){
 		if(ele[i].type == "radio"){
 			if(ele[i].checked){
@@ -155,115 +175,85 @@ function handleSubmit(event){
 		submit.disabled = true;
 
 		
-		for(var i=0; i<ele.length; i++){
-			if(ele[i].type == "radio"){
-				if(ele[i].checked){
-					ele[i].checked = false;
-				}
-
-			}
-		}
+		
 	}
 	
 }
 
 next.addEventListener("click", handleNext);
 
-function handleNext(event){
+function someCode(q){
+	console.log(q);
+	submit.innerHTML = "submit";
+	submit.style.backgroundColor = "lightblue";
+	submit.style.color = "floralwhite";
+	submit.disabled = false;
+	if(q<10){
+		question.innerHTML = questions[q].ques;
+
+	}
+	op1.innerHTML = questions[q].option1;
+	op2.innerHTML = questions[q].option2;
+	op3.innerHTML = questions[q].option3;
+	op4.innerHTML = questions[q].option4;
+
+	var ele = document.getElementsByTagName("input");
+	var sel;
+	for(var i=0; i<ele.length; i++){
+		if(ele[i].type == "radio"){
+			if(ele[i].checked){
+				sel = ele[i].id;
+			}
+
+		}
+	}
+	//correct
+	if(sel !== undefined){
+		if(sel == questions[q].correctAns){
+			submit.innerHTML = "correct";
+			submit.style.color = "green";
+			score++;
+		}
+		else{
+			submit.innerHTML = "incorrect";
+			submit.style.backgroundColor = "red";
+			submit.style.color = "yellow";
+		}
 	
+		submit.disabled = true;
+
+	}
+
+}
+
+
+                                //HANDLE NEXT BUTTON
+
+function handleNext(event){
+	uncheckALL();
+	submit.disabled = false;
+	submit.innerHTML = "Submit";
 	q++;
 
 	if(q==9){
 		next.innerHTML = "Finish test";
-		console.log(q);
-		submit.innerHTML = "submit";
-		submit.style.backgroundColor = "lightblue";
-		submit.style.color = "floralwhite";
-		submit.disabled = false;
-
-		question.innerHTML = questions[q].ques;
-		op1.innerHTML = questions[q].option1;
-		op2.innerHTML = questions[q].option2;
-		op3.innerHTML = questions[q].option3;
-		op4.innerHTML = questions[q].option4;
-
-		var ele = document.getElementsByTagName("input");
-		var sel;
-		for(var i=0; i<ele.length; i++){
-			if(ele[i].type == "radio"){
-				if(ele[i].checked){
-					sel = ele[i].id;
-				}
-
-			}
-		}
-		//correct
-		if(sel !== undefined){
-			if(sel == questions[q].correctAns){
-				submit.innerHTML = "correct";
-				submit.style.color = "green";
-				score++;
-			}
-			else{
-				submit.innerHTML = "incorrect";
-				submit.style.backgroundColor = "red";
-				submit.style.color = "yellow";
-			}
 		
-			submit.disabled = true;
-
-		}
+		someCode(q);
 
 		next.addEventListener("click", handleFinish);
 
 	}
 
-	else {
+	else if(q<9){
 		
-		console.log(q);
-		submit.innerHTML = "submit";
-		submit.style.backgroundColor = "lightblue";
-		submit.style.color = "floralwhite";
-		submit.disabled = false;
-		
-		question.innerHTML = questions[q].ques;
-		op1.innerHTML = questions[q].option1;
-		op2.innerHTML = questions[q].option2;
-		op3.innerHTML = questions[q].option3;
-		op4.innerHTML = questions[q].option4;
-
-		var ele = document.getElementsByTagName("input");
-		var sel;
-		for(var i=0; i<ele.length; i++){
-			if(ele[i].type == "radio"){
-				if(ele[i].checked){
-					sel = ele[i].id;
-				}
-
-			}
-		}
-		//correct
-		if(sel !== undefined){
-			if(sel == questions[q].correctAns){
-				submit.innerHTML = "correct";
-				submit.style.color = "green";
-				score++;
-			}
-			else{
-				submit.innerHTML = "incorrect";
-				submit.style.backgroundColor = "red";
-				submit.style.color = "yellow";
-			}
-		
-			submit.disabled = true;
-
-		}
-
-		
+		someCode(q);
+	
 	}
 		
 
 }
+
+                    //HANDLE FINISH BUTTON
 
 //display result page
 function handleFinish(event){
@@ -288,6 +278,9 @@ function handleFinish(event){
 
 }
 
+                       // HANDLE RESET BUTTON
+
+
 
 res.addEventListener("click", handleRes);
 function handleRes(event) {
@@ -301,6 +294,10 @@ function handleRes(event) {
 	home.style.display = "block";
 	quiz.style.display = "none";
 	ansKey.style.display = "none";
+	next.removeEventListener("click", handleFinish);
 	startBtn.addEventListener("click", commenceTest);
 	
-}
+}	
+
+
+
